@@ -1,0 +1,3 @@
+#!/usr/bin/env sh
+export $(grep -v '^#' .env | xargs)
+curl -s -X POST -u "$ASSISTANT_USERNAME:$ASSISTANT_PASSWORD" -H "Content-Type: application/json" -d @data/workspace.json https://gateway.watsonplatform.net/assistant/api/v1/workspaces/$ASSISTANT_WORKSPACE_ID/?version=$ASSISTANT_APIVERSION

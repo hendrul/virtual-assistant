@@ -1,0 +1,48 @@
+{
+  "name": "factorito",
+  "version": "0.0.1",
+  "description": "A starter kit for building a custom bot for your website with Botkit Studio",
+  "main": "bot.js",
+  "scripts": {
+    "build": "npm --production install",
+    "start": "node bot.js",
+    "dev": "node --inspect bot.js",
+    "test": "jest",
+    "download-workspace": "sh scripts/download_workspace",
+    "update-workspace": "sh scripts/upload_workspace"
+  },
+  "dependencies": {
+    "@cloudant/cloudant": "^2.4.0",
+    "body-parser": "^1.15.2",
+    "botkit": "^0.6.15",
+    "botkit-middleware-watson": "^1.8.1",
+    "cors": "^2.8.5",
+    "debug": "^3.1.0",
+    "dotenv": "^6.2.0",
+    "express": "^4.15.3",
+    "ibm_db": "^2.4.1",
+    "querystring": "^0.2.0",
+    "request": "^2.79.0",
+    "set-value": "^3.0.0",
+    "vcap_services": "^0.6.0"
+  },
+  "devDependencies": {
+    "ccurl": "^0.2.0",
+    "chokidar": "^2.0.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/howdyai/botkit-starter-web.git"
+  },
+  "bugs": {
+    "url": "https://github.com/howdyai/botkit-starter-web/issues"
+  },
+  "homepage": "https://github.com/howdyai/botkit-starter-web",
+  "keywords": [
+    "bots",
+    "chatbots",
+    "web chat"
+  ],
+  "author": "ben@howdy.ai",
+  "license": "ISC"
+}

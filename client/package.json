@@ -1,0 +1,47 @@
+{
+  "name": "factorit-assistants",
+  "version": "0.0.1",
+  "description": "Factorit Virtual Assistant",
+  "scripts": {
+    "build": "parcel build src/index.js -d dist/sctr/prod/_layouts/15/images/SCTR.Portal/chatbot --public-url _layouts/15/images/SCTR.Portal/chatbot",
+    "start": "parcel index.html -d dist/sctr/dev"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@material-ui/core": "^3.0.0",
+    "@material-ui/icons": "^3.0.1",
+    "dateformat": "^3.0.3",
+    "dotenv": "^6.2.0",
+    "eventemitter3": "^3.1.0",
+    "react": "^16.3.0",
+    "react-dom": "^16.3.0",
+    "react-icons": "^3.2.2",
+    "react-jss": "^8.6.1",
+    "react-pose": "^4.0.4",
+    "react-responsive": "^6.0.1",
+    "react-showdown": "^1.6.0",
+    "react-svg-inline": "^2.1.1",
+    "showdown": "^1.9.0",
+    "styled-system": "^3.1.11",
+    "typeface-roboto": "0.0.54",
+    "uuid": "^3.3.2"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3",
+    "babel-eslint": "^10.0.1",
+    "babel-loader": "^7.1.5",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "cssnano": "^4.1.8",
+    "eslint": "^5.11.0",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-jsx-a11y": "^6.1.2",
+    "eslint-plugin-prettier": "^3.0.0",
+    "eslint-plugin-react": "^7.11.1",
+    "parcel-bundler": "^1.11.0"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "name": "Factorito",
+  "description": "Atento y servicial roboasistente de FactorIT",
+  "repository": "https://github.com/hendrul/factorito",
+  "keywords": [
+    "node",
+    "bots",
+    "slack",
+    "botkit",
+    "factorit",
+    "bigdata",
+    "analitycs",
+    "watson"
+  ],
+  "website": "https://studio.botkit.ai/",
+  "success_url": "/",
+  "addons": [],
+  "env": {}
+}
