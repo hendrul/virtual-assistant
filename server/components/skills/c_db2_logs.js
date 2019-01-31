@@ -2,6 +2,8 @@ var debug = require("debug");
 var log = debug("app:skill:db2_logs");
 var error = debug("app:skill:db2_logs:error");
 
+const watsonMiddleware = require("../watson-middleware");
+
 if (!process.env.DB2_CONNECTION_STRING) {
   log(
     "DB2_CONNECTION_STRING is not defined in .env, messages won't be logged to db2"
@@ -59,83 +61,81 @@ try {
   conn && conn.closeSync();
 }
 
-var skill = function(controller, watsonMiddleware) {
-  var _before = watsonMiddleware.before;
-  var _after = watsonMiddleware.after;
+var _before = watsonMiddleware.before;
+var _after = watsonMiddleware.after;
 
-  watsonMiddleware.before = function(message, watsonPayload, cb) {
-    pool.open(process.env.DB2_CONNECTION_STRING, function(err, conn) {
-      if (err) {
-        error("Error opening pool, cannot store message logs.");
-        conn.close();
-        _before(message, watsonPayload, cb);
-        return;
-      }
+watsonMiddleware.before = function(message, watsonPayload, cb) {
+  pool.open(process.env.DB2_CONNECTION_STRING, function(err, conn) {
+    if (err) {
+      error("Error opening pool, cannot store message logs.");
+      conn.close();
+      _before(message, watsonPayload, cb);
+      return;
+    }
 
-      if (!message.text) {
-        _before(message, watsonPayload, cb);
-        conn.close();
-        return;
-      }
+    if (!message.text) {
+      _before(message, watsonPayload, cb);
+      conn.close();
+      return;
+    }
 
-      var InsertLogStmt = conn.prepareSync(sql`
-        INSERT INTO MSG_LOGS (ID, USER, MSG, DIRECTION, CHANNEL, ORDER)
-        VALUES (?, ?, ?, ?, ?, ?);
-      `);
+    var InsertLogStmt = conn.prepareSync(sql`
+      INSERT INTO MSG_LOGS (ID, USER, MSG, DIRECTION, CHANNEL, ORDER)
+      VALUES (?, ?, ?, ?, ?, ?);
+    `);
 
+    try {
+      message.guid = uuid();
+      var result = InsertLogStmt.executeSync([
+        message.guid,
+        message.user,
+        message.text,
+        "incomming",
+        message.channel,
+        0
+      ]);
+    } catch (err) {
+      error("Error when saving message to log.");
+    } finally {
+      conn.close();
+    }
+    _before(message, watsonPayload, cb);
+  });
+};
+
+watsonMiddleware.after = function(message, watsonResponse, cb) {
+  pool.open(process.env.DB2_CONNECTION_STRING, function(err, conn) {
+    if (err) {
+      error("Error opening pool, cannot store message logs.");
+      _before(message, watsonPayload, cb);
+      return;
+    }
+
+    var InsertLogStmt = conn.prepareSync(sql`
+      INSERT INTO MSG_LOGS (ID, USER, MSG, DIRECTION, CHANNEL, REPLY_TO, ORDER)
+      VALUES (?, ?, ?, ?, ?, ?, ?);
+    `);
+
+    getTextMessages(watsonResponse).forEach(function(msgText, i) {
       try {
-        message.guid = uuid();
         var result = InsertLogStmt.executeSync([
-          message.guid,
+          uuid(),
           message.user,
-          message.text,
-          "incomming",
+          msgText,
+          "outgoing",
           message.channel,
-          0
+          message.guid || null,
+          i + 1
         ]);
       } catch (err) {
         error("Error when saving message to log.");
       } finally {
         conn.close();
       }
-      _before(message, watsonPayload, cb);
     });
-  };
 
-  watsonMiddleware.after = function(message, watsonResponse, cb) {
-    pool.open(process.env.DB2_CONNECTION_STRING, function(err, conn) {
-      if (err) {
-        error("Error opening pool, cannot store message logs.");
-        _before(message, watsonPayload, cb);
-        return;
-      }
-
-      var InsertLogStmt = conn.prepareSync(sql`
-        INSERT INTO MSG_LOGS (ID, USER, MSG, DIRECTION, CHANNEL, REPLY_TO, ORDER)
-        VALUES (?, ?, ?, ?, ?, ?, ?);
-      `);
-
-      getTextMessages(watsonResponse).forEach(function(msgText, i) {
-        try {
-          var result = InsertLogStmt.executeSync([
-            uuid(),
-            message.user,
-            msgText,
-            "outgoing",
-            message.channel,
-            message.guid || null,
-            i + 1
-          ]);
-        } catch (err) {
-          error("Error when saving message to log.");
-        } finally {
-          conn.close();
-        }
-      });
-
-      _after(message, watsonResponse, cb);
-    });
-  };
+    _after(message, watsonResponse, cb);
+  });
 };
 
 function getTextMessages(watsonData) {
@@ -159,5 +159,3 @@ function getTextMessages(watsonData) {
       });
   }
 }
-
-module.exports = skill;

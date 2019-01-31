@@ -1,53 +1,49 @@
+var debug = require("debug")("app:skill:actions");
 var set = require("set-value");
 var merge = require("deepmerge");
 
-var ACTIONS_DIR = "../actions/";
+const watsonMiddleware = require("../watson-middleware");
+
+var ACTIONS_PATH = process.env.ACTIONS_PATH;
 var WORKSPACE_ID = process.env.ASSISTANT_WORKSPACE_ID;
-// prettier-ignore
-var ASSISTANT_SENDMESSAGE_URL =
-  'https://gateway.watsonplatform.net/assistant/api/v1/workspaces/' + process.env.ASSISTANT_WORKSPACE_ID + '/message';
 
 /**
  * Intercepts and process the actions on messages comming from watson.
- *
- * @param {Object} controller
- * @param {Object} watsonMiddleware
  */
-function main(controller, watsonMiddleware) {
-  var nextAfter = watsonMiddleware.after;
-  function actionProcessor(bot, watsonData, cb) {
-    var actionCalls = watsonData.actions;
-    if (actionCalls && actionCalls.length > 0) {
-      return processActions(actionCalls).then(function(actionResults) {
-        // Merge action results on the payload, this because sendToWatson
-        // only allows context deltas, but result variables could be set
-        // on input or output fields either
-        watsonData = merge(watsonData, actionResults, {
-          arrayMerge: function(destinationArray, sourceArray, options) {
-            return sourceArray;
-          }
-        });
-        var watsonRequest = {
-          workspace_id: WORKSPACE_ID,
-          context: watsonData.context || {},
-          input: {},
-          nodes_visited_details: true
-        };
-        // prettier-ignore
-        watsonMiddleware.conversation.message(
-          watsonRequest, 
-          function(err, watsonResponse) {
-            if (err) throw err;
-            actionProcessor(bot, watsonResponse, cb);
-          }
-        );
+
+var nextAfter = watsonMiddleware.after;
+function actionProcessor(bot, watsonData, cb) {
+  var actionCalls = watsonData.actions;
+  if (actionCalls && actionCalls.length > 0) {
+    return processActions(actionCalls).then(function(actionResults) {
+      // Merge action results on the payload, this because sendToWatson
+      // only allows context deltas, but result variables could be set
+      // on input or outpu  t fields either
+      watsonData = merge(watsonData, actionResults, {
+        arrayMerge: function(destinationArray, sourceArray, options) {
+          return sourceArray;
+        }
       });
-    } else {
-      nextAfter(bot, watsonData, cb);
-    }
+      var watsonRequest = {
+        workspace_id: WORKSPACE_ID,
+        context: watsonData.context || {},
+        input: {},
+        nodes_visited_details: true
+      };
+      // prettier-ignore
+      watsonMiddleware.conversation.message(
+        watsonRequest, 
+        function(err, watsonResponse) {
+          if (err) throw err;
+          actionProcessor(bot, watsonResponse, cb);
+        }
+      );
+    });
+  } else {
+    nextAfter(bot, watsonData, cb);
   }
-  watsonMiddleware.after = actionProcessor;
 }
+watsonMiddleware.after = actionProcessor;
 
 /**
  * Execute action descriptors sequentially.
@@ -108,7 +104,13 @@ function setResultValue(payload, resultVariable, value) {
 }
 
 function findAction(name) {
-  var normalizedPath = require("path").join(__dirname, ACTIONS_DIR, name);
+  if (!ACTIONS_PATH) {
+    debug(
+      'Ruta a directorio de acciones no definida. Por favor defina la ruta agregando la variable "ACTIONS_PATH" en el archivo .env'
+    );
+    return;
+  }
+  var normalizedPath = require("path").join(ACTIONS_PATH, name);
   var action = require(normalizedPath);
   if (typeof action !== "function" && typeof action.main === "function") {
     action = action.main;
@@ -116,7 +118,6 @@ function findAction(name) {
   return action;
 }
 
-module.exports = main;
 module.exports._processActions = processActions;
 module.exports._findAction = findAction;
 module.exports._setResultValue = setResultValue;

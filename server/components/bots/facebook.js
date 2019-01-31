@@ -1,4 +1,28 @@
-module.exports = function(controller, watsonMiddleware) {
+const debug = require("debug")("app:bot:facebook");
+const Botkit = require("botkit");
+
+var storage = require("../storage");
+const watsonMiddleware = require("../watson-middleware");
+
+const bot_options = {
+  access_token: process.env.FACEBOOK_PAGE_TOKEN,
+  verify_token: process.env.FACEBOOK_VERIFY_TOKEN,
+  app_secret: process.env.FACEBOOK_APP_SECRET
+};
+
+// Use cloudant database if specified, otherwise store in a JSON file local to the app.
+if (storage.cloudant) {
+  bot_options.storage = storage.cloudant;
+} else {
+  bot_options.json_file_store = __dirname + "/.data/db/"; // store user data in a simple JSON format
+}
+
+const controller = Botkit.facebookbot(bot_options);
+
+function setupMessageReceive(controller) {
+  controller.middleware.receive.use(function(bot, message, next) {
+    watsonMiddleware.receive(bot, message, next);
+  });
   controller.on(["message_received", "welcome"], function(bot, message) {
     if (message.watsonError) {
       bot.reply(
@@ -74,7 +98,32 @@ module.exports = function(controller, watsonMiddleware) {
       }
     }
   });
-  controller.middleware.receive.use(function(bot, message, next) {
-    watsonMiddleware.receive(bot, message, next);
-  });
+}
+
+// controller.hears("(.*)", "message_received", function(bot, message) {
+//   if (message.watsonError) {
+//     console.log(message.watsonError);
+//     bot.reply(
+//       message,
+//       message.watsonError.description || message.watsonError.error
+//     );
+//   } else if (message.watsonData && "output" in message.watsonData) {
+//     bot.reply(message, message.watsonData.output.text.join("\n"));
+//   } else {
+//     console.log(
+//       "Error: received message in unknown format. (Is your connection with Watson Assistant up and running?)"
+//     );
+//     bot.reply(
+//       message,
+//       "I'm sorry, but for technical reasons I can't respond to your message"
+//     );
+//   }
+// });
+
+controller.init = function(webserver, httpserver) {
+  setupMessageReceive(controller);
+  const bot = controller.spawn();
+  controller.createWebhookEndpoints(webserver, bot);
 };
+
+module.exports = controller;
