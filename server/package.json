@@ -5,8 +5,8 @@
   "main": "bot.js",
   "scripts": {
     "build": "npm --production install",
-    "start": "node bot.js",
-    "dev": "node --inspect bot.js",
+    "start": "node server.js",
+    "dev": "node --inspect server.js",
     "test": "jest",
     "download-workspace": "sh scripts/download_workspace",
     "update-workspace": "sh scripts/upload_workspace"
@@ -21,6 +21,7 @@
     "dotenv": "^6.2.0",
     "express": "^4.15.3",
     "ibm_db": "^2.4.1",
+    "localtunnel": "^1.9.1",
     "querystring": "^0.2.0",
     "request": "^2.79.0",
     "set-value": "^3.0.0",

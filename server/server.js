@@ -1,5 +1,33 @@
 const http = require("http");
 require("dotenv").config();
+var commandLineArgs = require("command-line-args");
+var localtunnel = require("localtunnel");
+
+const ops = commandLineArgs([
+  {
+    name: "lt",
+    alias: "l",
+    args: 1,
+    description: "Use localtunnel.me to make your bot available on the web.",
+    type: Boolean,
+    defaultValue: false
+  },
+  {
+    name: "ltsubdomain",
+    alias: "s",
+    args: 1,
+    description:
+      "Custom subdomain for the localtunnel.me URL. This option can only be used together with --lt.",
+    type: String,
+    defaultValue: null
+  }
+]);
+
+if (ops.lt === false && ops.ltsubdomain !== null) {
+  console.log("error: --ltsubdomain can only be used together with --lt.");
+  process.exit();
+}
+
 const app = require("./app");
 
 process.env.ACTIONS_PATH = require("path").join(
@@ -32,6 +60,27 @@ loadComponent("components/bots", controller => {
 });
 loadComponent("components/routes", routeComponent => routeComponent(app));
 loadComponent("components/skills");
+
+if (ops.lt) {
+  var tunnel = localtunnel(
+    process.env.PORT || 3000,
+    { subdomain: ops.ltsubdomain },
+    function(err, tunnel) {
+      if (err) {
+        console.log(err);
+        process.exit();
+      }
+      console.log("Server exposed at the following URL: " + tunnel.url);
+    }
+  );
+
+  tunnel.on("close", function() {
+    console.log(
+      "Your bot is no longer available on the web at the localtunnnel.me URL."
+    );
+    process.exit();
+  });
+}
 
 server.listen(process.env.PORT || 3000, null, function() {
   console.log(
