@@ -42,7 +42,7 @@ class SendMessageForm extends React.PureComponent {
           />
           <button
             type="submit"
-            className={classes.sendButton}
+            className={`${classes.sendButton} sendbutton`}
             {...(disabled ? { disabled } : {})}
           >
             <SendIcon />
