@@ -3,6 +3,10 @@
   "version": "0.0.1",
   "description": "A starter kit for building a custom bot for your website with Botkit Studio",
   "main": "bot.js",
+  "engines": {
+    "node": "8.11.2",
+    "npm": "5.6.0"
+  },
   "scripts": {
     "build": "npm --production install",
     "start": "node server.js",

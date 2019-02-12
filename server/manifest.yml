@@ -1,0 +1,9 @@
+applications:
+  - instances: 1
+    timeout: 180
+    name: selene-onp
+    buildpack: sdk-for-nodejs_v3_25_1-20190115-1637
+    command: npm start
+    memory: 128M
+    health-check-type: http
+    health-check-http-endpoint: /health
