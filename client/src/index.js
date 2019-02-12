@@ -3,6 +3,7 @@ import { render } from "react-dom";
 import { ThemeProvider } from "react-jss";
 import merge from "merge";
 import { createMuiTheme } from "@material-ui/core/styles";
+import "./assets/reset.css";
 import "typeface-roboto";
 
 import avatarUrl from "./assets/avatar100p.png";

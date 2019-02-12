@@ -6,7 +6,6 @@ import CloseIcon from "@material-ui/icons/Close";
 import CircularProgress from "@material-ui/core/CircularProgress";
 // import posed, { PoseGroup } from "react-pose";
 import "./assets/fonts.css";
-import "./assets/reboot.css";
 
 import Callout from "./callout";
 import ChatWindow from "./chat-window";
