@@ -5,6 +5,7 @@ var storage = require("../storage");
 const watsonMiddleware = require("../watson-middleware");
 
 const bot_options = {
+  stats_optout: true,
   access_token: process.env.FACEBOOK_PAGE_TOKEN,
   verify_token: process.env.FACEBOOK_VERIFY_TOKEN,
   app_secret: process.env.FACEBOOK_APP_SECRET
@@ -99,26 +100,6 @@ function setupMessageReceive(controller) {
     }
   });
 }
-
-// controller.hears("(.*)", "message_received", function(bot, message) {
-//   if (message.watsonError) {
-//     console.log(message.watsonError);
-//     bot.reply(
-//       message,
-//       message.watsonError.description || message.watsonError.error
-//     );
-//   } else if (message.watsonData && "output" in message.watsonData) {
-//     bot.reply(message, message.watsonData.output.text.join("\n"));
-//   } else {
-//     console.log(
-//       "Error: received message in unknown format. (Is your connection with Watson Assistant up and running?)"
-//     );
-//     bot.reply(
-//       message,
-//       "I'm sorry, but for technical reasons I can't respond to your message"
-//     );
-//   }
-// });
 
 controller.init = function(webserver, httpserver) {
   setupMessageReceive(controller);

@@ -53,7 +53,7 @@ function loadComponent(path = "components", initializer = i => i) {
   }
 }
 
-loadComponent("components/bots", controller => {
+loadComponent("components/connectors", controller => {
   controller.httpserver = server;
   controller.webserver = app;
   typeof controller.init === "function" && controller.init(app, server);
