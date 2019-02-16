@@ -17,6 +17,10 @@ class SendMessageForm extends React.PureComponent {
       msg: evt.target.value
     });
   };
+  inputRef = React.createRef();
+  componentDidUpdate(prevProps, prevState) {
+    this.inputRef.current.focus();
+  }
   render() {
     const { onSend, placeholder, disabled, theme, classes } = this.props;
     return (
@@ -24,15 +28,17 @@ class SendMessageForm extends React.PureComponent {
         <form
           className={classes.form}
           onSubmit={event => {
-            const msg = this.state.msg;
             this.setState({
               msg: ""
             });
             onSend(this.state.msg, event);
+            this.inputRef.current.focus();
           }}
         >
           <input
             type="text"
+            autoFocus
+            ref={this.inputRef}
             value={this.state.msg}
             autoComplete="off"
             placeholder={placeholder}
