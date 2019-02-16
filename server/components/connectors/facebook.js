@@ -95,7 +95,10 @@ function setupMessageReceive(controller) {
               });
             });
           }, Promise.resolve())
-          .then(function() {});
+          .then(function() {})
+          .catch(function(err) {
+            console.error(err);
+          });
       }
     }
   });
