@@ -1,4 +1,5 @@
-const http = require("http");
+var https = require("https");
+var fs = require("fs");
 require("dotenv").config();
 var commandLineArgs = require("command-line-args");
 var localtunnel = require("localtunnel");
@@ -40,7 +41,12 @@ process.on("uncaughtException", err => {
   console.error(err.stack);
 });
 
-const server = http.createServer(app);
+const options = {
+  key: fs.readFileSync("./sslcert/server-key.pem"),
+  cert: fs.readFileSync("./sslcert/server-crt.pem"),
+  ca: fs.readFileSync("./sslcert/ca-crt.pem")
+};
+const server = https.createServer(options, app);
 
 function loadComponent(path = "components", initializer = i => i) {
   const normalizedPath = require("path").join(__dirname, path);
@@ -84,7 +90,7 @@ if (ops.lt) {
 
 server.listen(process.env.PORT || 3000, null, function() {
   console.log(
-    "Express webserver configured and listening at http://localhost:" +
+    "Express webserver configured and listening at https://localhost:" +
       process.env.PORT || 3000
   );
 });
