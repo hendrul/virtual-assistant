@@ -3,6 +3,7 @@ var fs = require("fs");
 require("dotenv").config();
 var commandLineArgs = require("command-line-args");
 var localtunnel = require("localtunnel");
+var express = require("express");
 
 const ops = commandLineArgs([
   {
@@ -36,6 +37,9 @@ process.env.ACTIONS_PATH = require("path").join(
   process.env.ACTIONS_PATH || "components/actions"
 );
 
+let baseApp = express();
+baseApp.use(process.env.BASE_PATH || "/", app);
+
 // Never crash on uncaught exceptions
 process.on("uncaughtException", err => {
   console.error(err.stack);
@@ -46,7 +50,7 @@ const options = {
   cert: fs.readFileSync("./sslcert/server-crt.pem"),
   ca: fs.readFileSync("./sslcert/ca-crt.pem")
 };
-const server = https.createServer(options, app);
+const server = https.createServer(options, baseApp);
 
 function loadComponent(path = "components", initializer = i => i) {
   const normalizedPath = require("path").join(__dirname, path);
