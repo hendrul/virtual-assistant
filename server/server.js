@@ -95,7 +95,8 @@ if (ops.lt) {
 server.listen(process.env.PORT || 3000, null, function() {
   console.log(
     "Express webserver configured and listening at https://localhost:" +
-      process.env.PORT || 3000
+      (process.env.PORT || 3000) +
+      (process.env.BASE_PATH ? process.env.BASE_PATH : "")
   );
 });
 
