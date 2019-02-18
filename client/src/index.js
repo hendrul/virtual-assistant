@@ -11,7 +11,7 @@ import Chat from "./components/chat";
 import BotkitConnection from "./botkit-connection";
 
 const botkitConnection = new BotkitConnection({
-  wss: (window.appConfig || {}).ssl,
+  ssl: (window.appConfig || {}).ssl,
   host: (window.appConfig || {}).host,
   reconnectTimeout: 3000,
   maxReconnect: 5

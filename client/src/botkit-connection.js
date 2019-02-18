@@ -85,7 +85,7 @@ class BotkitConnection {
   getHistory = () => {
     if (this.guid) {
       // prettier-ignore
-      this.request(this.config.ssl ? "https" : "http" + "://" + this.config.host + "/botkit/history", {
+      this.request((this.config.ssl ? "https" : "http") + "://" + this.config.host + "/botkit/history", {
         user: this.guid
       })
         .then(history => {
