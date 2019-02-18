@@ -90,7 +90,7 @@ const styles = theme => ({
     left: "120px",
     color: "#fff",
     "& #avatarName": {
-      fontFamily: '"Merienda", Times, serif'
+      fontFamily: "Merienda, cursive"
     },
     "& #slogan": {
       fontStyle: "italic",
