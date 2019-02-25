@@ -19,7 +19,9 @@ class SendMessageForm extends React.PureComponent {
   };
   inputRef = React.createRef();
   componentDidUpdate(prevProps, prevState) {
-    this.inputRef.current.focus();
+    setTimeout(() => {
+      this.inputRef.current.focus();
+    }, 300);
   }
   render() {
     const { onSend, placeholder, disabled, theme, classes } = this.props;
