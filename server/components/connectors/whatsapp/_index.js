@@ -105,7 +105,7 @@ function setupMessageReceive(controller) {
 
 const controller = twitterbot(bot_options);
 
-controller.init = function(webserver, httpserver, httpsserver) {
+controller.init = function(webserver, httpserver) {
   setupMessageReceive(controller);
   const bot = controller.spawn();
   controller.createWebhookEndpoints(webserver, bot);

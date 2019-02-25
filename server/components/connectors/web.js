@@ -177,12 +177,17 @@ function setupMessageHistory(controller) {
 // Create the Botkit controller, which controls all instances of the bot.
 var controller = Botkit.socketbot(bot_options);
 
-controller.init = function(webserver, httpserver) {
+controller.init = function(webserver, httpserver, httpsserver) {
   setupMessageHistory(controller);
   setupMessageReceive(controller);
 
   // Open the web socket server
-  controller.openSocketServer(httpserver);
+  if (httpserver) {
+    controller.openSocketServer(httpserver);
+  }
+  if (httpsserver) {
+    controller.openSocketServer(httpsserver);
+  }
 
   // Start the bot brain in motion!!
   controller.startTicking();

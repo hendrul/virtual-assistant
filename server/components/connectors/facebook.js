@@ -104,7 +104,7 @@ function setupMessageReceive(controller) {
   });
 }
 
-controller.init = function(webserver, httpserver) {
+controller.init = function(webserver, httpserver, httpsserver) {
   setupMessageReceive(controller);
   const bot = controller.spawn();
   controller.createWebhookEndpoints(webserver, bot);

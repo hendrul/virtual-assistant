@@ -1,3 +1,4 @@
+var http = require("http");
 var https = require("https");
 var fs = require("fs");
 require("dotenv").config();
@@ -45,12 +46,27 @@ process.on("uncaughtException", err => {
   console.error(err.stack);
 });
 
-const options = {
-  key: fs.readFileSync("./sslcert/server-key.pem"),
-  cert: fs.readFileSync("./sslcert/server-crt.pem"),
-  ca: fs.readFileSync("./sslcert/ca-crt.pem")
-};
-const server = https.createServer(options, baseApp);
+const options = {};
+options.key = fs.readFileSync("./sslcert/server-key.pem");
+options.cert = fs.readFileSync("./sslcert/server-crt.pem");
+try {
+  options.ca = fs.readFileSync("./sslcert/ca-crt.pem");
+} catch (e) {}
+
+let httpServer;
+let httpsServer;
+if (
+  process.env.PORT_HTTP ||
+  (!process.env.PORT_HTTPS && !process.env.PORT_HTTP)
+) {
+  httpServer = http.createServer(baseApp);
+}
+if (
+  process.env.PORT_HTTPS ||
+  (!process.env.PORT_HTTPS && !process.env.PORT_HTTP)
+) {
+  httpsServer = https.createServer(options, baseApp);
+}
 
 function loadComponent(path = "components", initializer = i => i) {
   const normalizedPath = require("path").join(__dirname, path);
@@ -64,9 +80,11 @@ function loadComponent(path = "components", initializer = i => i) {
 }
 
 loadComponent("components/connectors", controller => {
-  controller.httpserver = server;
+  controller.httpserver = httpServer;
+  controller.httpsserver = httpsServer;
   controller.webserver = app;
-  typeof controller.init === "function" && controller.init(app, server);
+  typeof controller.init === "function" &&
+    controller.init(app, httpServer, httpsServer);
 });
 loadComponent("components/routes", routeComponent => routeComponent(app));
 loadComponent("components/skills");
@@ -92,13 +110,25 @@ if (ops.lt) {
   });
 }
 
-server.listen(process.env.PORT || 3000, null, function() {
-  console.log(
-    "Express webserver configured and listening at https://localhost:" +
-      (process.env.PORT || 3000) +
-      (process.env.BASE_PATH ? process.env.BASE_PATH : "")
-  );
-});
+if (httpsServer) {
+  httpsServer.listen(process.env.PORT_HTTPS || 3000, null, function() {
+    console.log(
+      "Express webserver configured and listening at https://localhost:" +
+        (process.env.PORT_HTTPS || 3000) +
+        (process.env.BASE_PATH ? process.env.BASE_PATH : "")
+    );
+  });
+}
+
+if (httpServer) {
+  httpServer.listen(process.env.PORT_HTTP || 3001, null, function() {
+    console.log(
+      "Express webserver configured and listening at http://localhost:" +
+        (process.env.PORT_HTTP || 3001) +
+        (process.env.BASE_PATH ? process.env.BASE_PATH : "")
+    );
+  });
+}
 
 if (process.env.NODE_ENV === "development") {
   // ////////////////// HOT-LOADING NODE.JS  /////////////////////////////
