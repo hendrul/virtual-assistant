@@ -49,8 +49,13 @@ function WhatsappBot(configuration) {
      * Receives Account Activity events
      **/
     webserver.post("/whatsapp/receive", function(request, response) {
-      whatsapp_botkit.ingest(bot, request.body, response);
-      response.send("200 OK");
+      try {
+        const message = JSON.parse(request.body.data);
+        whatsapp_botkit.ingest(bot, message, response);
+        response.status(200);
+      } catch (e) {
+        response.status(400);
+      }
     });
 
     return whatsapp_botkit;
@@ -110,9 +115,9 @@ function WhatsappBot(configuration) {
             })
         },
         function(err, response, body) {
-          if (err) {
-            botkit.debug("WEBHOOK ERROR", err);
-            return cb && cb(err);
+          if (err || response.statusCode !== 200) {
+            botkit.debug("SEND ERROR", err);
+            return cb && cb(err || new Error("Non 200 status"));
           }
           if (body.result_code < 0) {
             botkit.debug("API ERROR: " + getResultMessage(body.result_code));
