@@ -1,17 +1,13 @@
-const debug = require("debug")("app:bot:twitter");
-const twitterbot = require("./TwitterBot");
+const debug = require("debug")("app:bot:whatsapp");
+const whatsappbot = require("./WhatsappBot");
 
 var storage = require("../../storage");
 const watsonMiddleware = require("../../watson-middleware");
 
 const bot_options = {
   stats_optout: true,
-  consumer_key: process.env.TWITTER_CONSUMER_KEY,
-  consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
-  access_token: process.env.TWITTER_ACCESS_TOKEN,
-  access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET,
-  timeout_ms: 60 * 1000, // optional HTTP request timeout to apply to all requests.
-  strictSSL: false, // optional - requires SSL certificates to be valid.
+  apikey: process.env.WHATSAPP_API_KEY,
+  number: process.env.WHATSAPP_NUMBER,
   debug: true
 };
 
@@ -48,24 +44,7 @@ function setupMessageReceive(controller) {
               var digressed = ((message.context || {}).system || {}).digressed;
               return digressed ? text[0] : text.join("\n");
             case "option":
-              return {
-                text:
-                  resp.title.trim() +
-                  (resp.title
-                    .trim()
-                    .slice(-1)
-                    .match(/\w/)
-                    ? "."
-                    : "") +
-                  " " +
-                  resp.description,
-                quick_replies: resp.options.map(function(option) {
-                  return {
-                    title: option.label,
-                    payload: option.value.input.text
-                  };
-                })
-              };
+              throw new Error("Quick replies not supported");
             case "image":
               return {
                 text: resp.title,
@@ -77,10 +56,7 @@ function setupMessageReceive(controller) {
                 ]
               };
             case "pause":
-              return {
-                typing: false,
-                typingDelay: resp.time
-              };
+              throw new Error("Pause not supported");
             default:
               return "Perdona tengo un problema en estos momentos, no puedo darte una respuesta coherente";
           }
@@ -103,7 +79,7 @@ function setupMessageReceive(controller) {
   });
 }
 
-const controller = twitterbot(bot_options);
+const controller = whatsappbot(bot_options);
 
 controller.init = function(webserver, httpserver) {
   setupMessageReceive(controller);
