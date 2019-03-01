@@ -102,7 +102,7 @@ function WhatsappBot(configuration) {
         {
           json: true,
           url:
-            "https://panel.apiwha.com/send_message.php" +
+            "https://panel.apiwha.com/send_message.php?" +
             qs.stringify({
               apikey: apikey,
               number: msg.number,
