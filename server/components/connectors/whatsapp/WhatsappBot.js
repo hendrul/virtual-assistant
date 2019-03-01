@@ -19,7 +19,6 @@ function WhatsappBot(configuration) {
   whatsapp_botkit.middleware.normalize.use(function(bot, message, next) {
     // capture the user ID
     message.user = message.from;
-    // FIX: Whatsapp tiene canal 1:1 entre los usuarios?
     message.channel = message.user;
     next();
   });
@@ -30,11 +29,10 @@ function WhatsappBot(configuration) {
     platform_message,
     next
   ) {
-    platform_message.number = whatsapp_botkit.config.number;
-    if (isMediaUrl(message.text)) {
-    } else {
-      platform_message.text = message.text;
-    }
+    platform_message.number = message.to;
+    platform_message.text = isMediaUrl(message.text)
+      ? message.url
+      : message.text;
     next();
   });
 
