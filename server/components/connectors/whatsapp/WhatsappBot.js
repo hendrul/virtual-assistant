@@ -57,8 +57,8 @@ function WhatsappBot(configuration) {
   };
 
   function isMediaUrl(text) {
-    const mediaUrl = url(text)
-    return mediaUrl.protocol && mediaUrl.path && mediaUrl.path.endsWith()
+    const mediaUrl = url.parse(text);
+    return mediaUrl.protocol && mediaUrl.path;
   }
 
   function getResultMessage(code) {
