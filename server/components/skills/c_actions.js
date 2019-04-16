@@ -66,10 +66,11 @@ function processActions(actionDescriptors, options = {}) {
           process.env,
           actionCall.parameters
         );
-        p = p.then(function() {
-          var action = findAction(actionCall.name);
-          // prettier-ignore
-          return Promise.resolve(action(actionParams))
+        p = p
+          .then(function() {
+            var action = findAction(actionCall.name);
+            // prettier-ignore
+            return Promise.resolve(action(actionParams))
             .then(function(actionResult) {
               setResultValue(newPayload, actionCall.result_variable, actionResult);
             })
@@ -77,7 +78,10 @@ function processActions(actionDescriptors, options = {}) {
               setResultValue(newPayload, actionCall.result_variable, { action_error: err.message });
               if(stopOnError) throw err;
             });
-        });
+          })
+          .catch(e => {
+            console.error(e);
+          });
       })();
     }
   }

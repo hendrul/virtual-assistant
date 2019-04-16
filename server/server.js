@@ -73,25 +73,23 @@ function loadComponent(path = "components", initializer = i => i) {
   if (require("fs").existsSync(normalizedPath)) {
     require("fs")
       .readdirSync(path)
+      .reverse()
       .forEach(file =>
         initializer(require(require("path").join(normalizedPath, file)))
       );
   }
 }
 
-loadComponent("components/connectors", controller => {
-  controller.httpserver = httpServer;
-  controller.httpsserver = httpsServer;
-  controller.webserver = app;
-  typeof controller.init === "function" &&
-    controller.init(app, httpServer, httpsServer);
+loadComponent("components/connectors", Connector => {
+  const connector = new Connector(app, httpServer, httpsServer);
+  connector.init();
 });
 loadComponent("components/routes", routeComponent => routeComponent(app));
 loadComponent("components/skills");
 
 if (ops.lt) {
   var tunnel = localtunnel(
-    process.env.PORT || 3000,
+    process.env.PORT || 8080,
     { subdomain: ops.ltsubdomain },
     function(err, tunnel) {
       if (err) {
@@ -111,20 +109,20 @@ if (ops.lt) {
 }
 
 if (httpsServer) {
-  httpsServer.listen(process.env.PORT_HTTPS || 3000, null, function() {
+  httpsServer.listen(process.env.PORT_HTTPS || 8443, null, function() {
     console.log(
       "Express webserver configured and listening at https://localhost:" +
-        (process.env.PORT_HTTPS || 3000) +
+        (process.env.PORT_HTTPS || 8443) +
         (process.env.BASE_PATH ? process.env.BASE_PATH : "")
     );
   });
 }
 
 if (httpServer) {
-  httpServer.listen(process.env.PORT_HTTP || 3001, null, function() {
+  httpServer.listen(process.env.PORT_HTTP || 8080, null, function() {
     console.log(
       "Express webserver configured and listening at http://localhost:" +
-        (process.env.PORT_HTTP || 3001) +
+        (process.env.PORT_HTTP || 8080) +
         (process.env.BASE_PATH ? process.env.BASE_PATH : "")
     );
   });

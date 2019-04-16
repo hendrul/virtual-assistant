@@ -4,6 +4,13 @@ var qs = require("querystring");
 var url = require("url");
 
 function WhatsappBot(configuration) {
+  if (typeof configuration.whitelist === "string") {
+    const whitelistArr = configuration.whitelist.split(",");
+    configuration = Object.assign({}, configuration, {
+      whitelist: whitelistArr
+    });
+  }
+
   // Create a core botkit bot
   const whatsapp_botkit = CoreBot(configuration || {});
 
@@ -29,7 +36,7 @@ function WhatsappBot(configuration) {
     platform_message,
     next
   ) {
-    platform_message.number = message.to;
+    platform_message.number = message.user;
     platform_message.text = isMediaUrl(message.text)
       ? message.url
       : message.text;
@@ -49,10 +56,18 @@ function WhatsappBot(configuration) {
     webserver.post("/whatsapp/receive", function(request, response) {
       try {
         const message = JSON.parse(request.body.data);
-        whatsapp_botkit.ingest(bot, message, response);
-        response.status(200);
+        if (
+          !configuration.whitelist ||
+          configuration.whitelist.find(
+            num => !!num.match(new RegExp(`[+]?${message.from}`))
+          )
+        ) {
+          whatsapp_botkit.ingest(bot, message, response);
+        }
+
+        response.sendStatus(200);
       } catch (e) {
-        response.status(400);
+        response.sendStatus(400);
       }
     });
 
@@ -136,14 +151,27 @@ function WhatsappBot(configuration) {
       }
 
       msg.channel = src.channel;
-      msg.to = src.user;
+      msg.user = src.user;
 
       bot.say(msg, cb);
     };
 
     bot.findConversation = function(message, cb) {
-      botkit.debug("DEFAULT FIND CONVO");
-      cb(null);
+      botkit.debug("CUSTOM FIND CONVO", message.user, message.channel);
+      for (var t = 0; t < botkit.tasks.length; t++) {
+        for (var c = 0; c < botkit.tasks[t].convos.length; c++) {
+          if (
+            botkit.tasks[t].convos[c].isActive() &&
+            botkit.tasks[t].convos[c].source_message.user == message.user &&
+            botkit.excludedEvents.indexOf(message.type) == -1 // this type of message should not be included
+          ) {
+            botkit.debug("FOUND EXISTING CONVO!");
+            cb(botkit.tasks[t].convos[c]);
+            return;
+          }
+        }
+      }
+      cb();
     };
 
     return bot;

@@ -27,7 +27,7 @@ try {
   var conn = ibmdb.openSync(process.env.DB2_CONNECTION_STRING, {
     connectTimeout: 5
   });
-  // Create schema for message logs
+  // Create table for message logs
   var data = conn.querySync(sql`
       CREATE TABLE MSG_LOGS (
         ID  VARCHAR(36) NOT NULL,
