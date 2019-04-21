@@ -1,4 +1,5 @@
 import EventEmitter from "eventemitter3";
+import path from "path";
 
 const Events = {
   DISCONNECTED: "DISCONNECTED",
@@ -11,8 +12,9 @@ const COOKIE_NAME = "botkit_guid";
 
 class BotkitConnection {
   static defaultConfig = {
-    ssl: false,
+    ssl: location.protocol === "https:",
     host: location.host,
+    basePath: "",
     reconnectTimeout: 3000,
     maxReconnect: 5
   };
@@ -23,7 +25,9 @@ class BotkitConnection {
   constructor(config = {}) {
     this.config = {};
     Object.assign(this.config, BotkitConnection.defaultConfig, config);
-    (this.wsUrl = (this.config.ssl ? "wss" : "ws") + "://" + this.config.host),
+    // prettier-ignore
+    (this.wsUrl =
+      (this.config.ssl ? "wss" : "ws") + "://" + path.join(this.config.host, this.config.basePath)),
       (this.eventEmitter = new EventEmitter());
   }
   on = (event, handler) => {
@@ -85,7 +89,7 @@ class BotkitConnection {
   getHistory = () => {
     if (this.guid) {
       // prettier-ignore
-      this.request((this.config.ssl ? "https" : "http") + "://" + this.config.host + "/botkit/history", {
+      this.request((this.config.ssl ? "https" : "http") + "://" + path.join(this.config.host, this.config.basePath) + "/botkit/history", {
         user: this.guid
       })
         .then(history => {
