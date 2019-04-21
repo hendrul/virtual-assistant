@@ -3,10 +3,10 @@
   "version": "0.0.1",
   "description": "Factorit Virtual Assistant",
   "scripts": {
-    "build": "parcel build src/index.js -d dist/sctr/prod/_layouts/15/images/SCTR.Portal/chatbot --public-url _layouts/15/images/SCTR.Portal/chatbot",
-    "start": "parcel src/index.js -d dist/sctr/dev"
+    "build": "parcel build src/index.js -d dist/$THEME/prod --public-url $RESOURCES_PATH",
+    "debug": "parcel src/index.js -d dist/$THEME/dev"
   },
-  "author": "",
+  "author": "Raul Contreras",
   "license": "ISC",
   "dependencies": {
     "@material-ui/core": "^3.0.0",
