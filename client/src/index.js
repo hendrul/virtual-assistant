@@ -1,6 +1,7 @@
 import React from "react";
 import { render } from "react-dom";
 import { ThemeProvider } from "react-jss";
+import path from "path";
 import merge from "merge";
 import { createMuiTheme } from "@material-ui/core/styles";
 import "./assets/reset.css";
@@ -17,7 +18,7 @@ const botkitConnection = new BotkitConnection({
   maxReconnect: 5
 });
 import themes from "./themes/*.js";
-const baseThemeName = (window.appConfig || {}).baseTheme || "onp-sctr";
+const baseThemeName = (window.appConfig || {}).baseTheme || "default";
 const baseTheme = themes[baseThemeName] || {};
 const themeOverrides = (window.appConfig || {}).themeOverrides;
 let baseThemeWithOverrides = !themeOverrides
