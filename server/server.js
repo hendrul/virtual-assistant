@@ -1,10 +1,12 @@
 var http = require("http");
 var https = require("https");
 var fs = require("fs");
-require("dotenv").config();
+var path = require("path");
 var commandLineArgs = require("command-line-args");
 var localtunnel = require("localtunnel");
 var express = require("express");
+
+require("dotenv").config({ path: path.resolve(process.cwd(), "..", ".env") });
 
 const ops = commandLineArgs([
   {
@@ -38,9 +40,6 @@ process.env.ACTIONS_PATH = require("path").join(
   process.env.ACTIONS_PATH || "components/actions"
 );
 
-let baseApp = express();
-baseApp.use(process.env.BASE_PATH || "/", app);
-
 // Never crash on uncaught exceptions
 process.on("uncaughtException", err => {
   console.error(err.stack);
@@ -59,13 +58,13 @@ if (
   process.env.PORT_HTTP ||
   (!process.env.PORT_HTTPS && !process.env.PORT_HTTP)
 ) {
-  httpServer = http.createServer(baseApp);
+  httpServer = http.createServer(app);
 }
 if (
   process.env.PORT_HTTPS ||
   (!process.env.PORT_HTTPS && !process.env.PORT_HTTP)
 ) {
-  httpsServer = https.createServer(options, baseApp);
+  httpsServer = https.createServer(options, app);
 }
 
 function loadComponent(path = "components", initializer = i => i) {
