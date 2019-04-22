@@ -9,7 +9,7 @@ var debug = require("debug")("botkit:webserver");
 
 var corsOptions = {
   origin: function(origin, callback) {
-    const whitelist = process.env.CORS_WHITELIST.split(";");
+    //const whitelist = process.env.CORS_WHITELIST.split(";");
     if (true /* whitelist.indexOf(origin) !== -1*/) {
       callback(null, true);
     } else {

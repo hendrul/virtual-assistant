@@ -1,6 +1,13 @@
+import avatarUrl from "./avatar.png";
+import "./reset.css";
+
 let SPACING_UNIT = 8;
 
 const theme = {
+  avatar: {
+    url: avatarUrl,
+    name: "TaiBot"
+  },
   breakpoints: {
     values: {
       sm: 600

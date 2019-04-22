@@ -1,5 +1,6 @@
 import EventEmitter from "eventemitter3";
 import path from "path";
+import defaults from "lodash.defaults";
 
 const Events = {
   DISCONNECTED: "DISCONNECTED",
@@ -24,7 +25,7 @@ class BotkitConnection {
 
   constructor(config = {}) {
     this.config = {};
-    Object.assign(this.config, BotkitConnection.defaultConfig, config);
+    defaults(this.config, config, BotkitConnection.defaultConfig);
     // prettier-ignore
     (this.wsUrl =
       (this.config.ssl ? "wss" : "ws") + "://" + path.join(this.config.host, this.config.basePath)),

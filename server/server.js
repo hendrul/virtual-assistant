@@ -6,6 +6,7 @@ var commandLineArgs = require("command-line-args");
 var localtunnel = require("localtunnel");
 var express = require("express");
 
+require("dotenv").config();
 require("dotenv").config({ path: path.resolve(process.cwd(), "..", ".env") });
 
 const ops = commandLineArgs([

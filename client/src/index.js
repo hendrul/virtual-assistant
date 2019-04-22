@@ -4,10 +4,8 @@ import { ThemeProvider } from "react-jss";
 import path from "path";
 import merge from "merge";
 import { createMuiTheme } from "@material-ui/core/styles";
-import "./assets/reset.css";
 import "typeface-roboto";
 
-import avatarUrl from "./assets/avatar100p.png";
 import Chat from "./components/chat";
 import BotkitConnection from "./botkit-connection";
 
@@ -17,7 +15,7 @@ const botkitConnection = new BotkitConnection({
   reconnectTimeout: 3000,
   maxReconnect: 5
 });
-import themes from "./themes/*.js";
+import themes from "./themes";
 const baseThemeName = (window.appConfig || {}).baseTheme || "default";
 const baseTheme = themes[baseThemeName] || {};
 const themeOverrides = (window.appConfig || {}).themeOverrides;
@@ -30,7 +28,7 @@ render(
   <ThemeProvider theme={theme}>
     <Chat
       connection={botkitConnection}
-      avatarUrl={avatarUrl}
+      avatarUrl={theme.avatar.url}
       avatarName="Selene"
       slogan="Tu asistente de confianza."
       calloutMessages={["¡Hola! Soy Selene, tu asistente de confianza."]}
