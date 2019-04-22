@@ -7,7 +7,7 @@ let SPACING_UNIT = 8;
 const theme = {
   avatar: {
     url: avatarUrl,
-    name: "TaiBot"
+    name: "Selene"
   },
   breakpoints: {
     values: {

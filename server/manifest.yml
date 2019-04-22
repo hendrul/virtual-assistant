@@ -11,10 +11,10 @@
 applications:
   - instances: 1
     timeout: 600
-    name: chatbot-sctr
+    name: chatbot-tailoy
     command: node /usr/src/chatbot/server.js
     docker:
-      image: hendrul/chatbot-sctr
+      image: hendrul/chatbot-tailoy
     memory: 128M
     disk_quota: 2G
     env:

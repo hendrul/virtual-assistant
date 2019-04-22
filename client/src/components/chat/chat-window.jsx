@@ -43,7 +43,7 @@ const mapStatusToProps = status => {
       };
     case Status.TYPING:
       return {
-        text: "Selene esta escribiendo",
+        text: "TaiBot esta escribiendo",
         showDots: true,
         dotsPosition: "right"
       };
@@ -188,7 +188,7 @@ class ChatWindow extends React.PureComponent {
           />
           <MessageSendForm
             disabled={status !== Status.CONNECTED}
-            placeholder="Escribe tus preguntas..."
+            placeholder="Escribe tus comentarios..."
             onSend={this.handleSend}
           />
         </div>
