@@ -24,9 +24,9 @@ const styles = {
     color: "#333",
     borderRadius: "5px",
     display: "inline-block",
-    maxWidth: "75%",
+    // maxWidth: "100%",
     "& img": {
-      maxWidth: "100%",
+      // maxWidth: "100%",
       display: "block"
     }
   }

@@ -39,3 +39,7 @@ body {
 #chat-root a {
   color: blue !important;
 }
+#chat-root img {
+  max-width: unset !important;
+  max-height: unset !important;
+}

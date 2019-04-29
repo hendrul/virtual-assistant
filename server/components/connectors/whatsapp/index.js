@@ -87,7 +87,9 @@ class WhatsappConnector {
          * "Botkit Web Connector" https://botkit.ai/docs/readme-web.html
          */
         if (message.watsonData && message.watsonData.output.generic) {
-          var replies = message.watsonData.output.generic.map(function(resp) {
+          var output = message.watsonData.output;
+          var responses = (output.dynamic || {}).generic || output.generic;
+          var replies = responses.map(function(resp) {
             switch (resp.response_type) {
               case "text":
                 var text = [].concat(resp.text);

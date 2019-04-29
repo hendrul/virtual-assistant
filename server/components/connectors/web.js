@@ -132,13 +132,15 @@ class WebConnector {
          * "Botkit Web Connector" https://botkit.ai/docs/readme-web.html
          */
         if (message.watsonData && message.watsonData.output.generic) {
-          var replies = message.watsonData.output.generic.map(resp => {
+          var output = message.watsonData.output;
+          var responses = (output.dynamic || {}).generic || output.generic;
+          var replies = responses.map(resp => {
             switch (resp.response_type) {
               case "text":
                 var text = [].concat(resp.text);
                 var digressed = ((message.context || {}).system || {})
                   .digressed;
-                return digressed ? text[0] : text.join("\n");
+                return digressed ? text[0] : text.join("<br>");
               case "option":
                 return {
                   text:

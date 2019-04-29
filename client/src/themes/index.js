@@ -3,7 +3,7 @@
 import tailoy from "./tailoy";
 
 export default {
-  // default_theme,
+  // default_theme
   // onp_sctr
   tailoy
 };

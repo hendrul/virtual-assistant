@@ -3,6 +3,7 @@ import withStyles, { withTheme } from "react-jss";
 import { space } from "styled-system";
 import { Markdown } from "react-showdown";
 import Typography from "@material-ui/core/Typography";
+import FileAttachment from "./file-attachment";
 import Paper from "@material-ui/core/Paper";
 
 const Variants = {
@@ -62,7 +63,13 @@ const styles = theme => ({
     textAlign: "justify",
     width: "auto",
     display: "inline-block",
-    maxWidth: "75%",
+    ...(message.files
+      ? {
+          maxWidth: "100%"
+        }
+      : {
+          maxWidth: "75%"
+        }),
     ...(message.type === "outgoing"
       ? {
           alignSelf: "flex-end",
