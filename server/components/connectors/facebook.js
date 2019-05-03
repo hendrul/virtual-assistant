@@ -43,7 +43,7 @@ class FacebookConnector {
       Object.assign(this, Botkit.facebookbot(this.options));
       this.setupMessageReceive();
       const bot = this.spawn();
-      this.createWebhookEndpoints(webserver, bot);
+      this.createWebhookEndpoints(this.webserver, bot);
     } else {
       console.log(
         "Facebook connector disabled. To enable add facebook required configuration in .env"

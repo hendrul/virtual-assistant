@@ -48,7 +48,7 @@ class TwitterConnector {
       Object.assign(this, twitterbot(this.options));
       this.setupMessageReceive();
       const bot = this.spawn();
-      this.createWebhookEndpoints(webserver, bot);
+      this.createWebhookEndpoints(this.webserver, bot);
     } else {
       console.log(
         "Twitter connector disabled. To enable add twitter required configuration in .env"
