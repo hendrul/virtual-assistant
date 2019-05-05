@@ -18,6 +18,8 @@ if (storage.cloudant) {
   defaultOptions.json_file_store = __dirname + "/.data/db/"; // store user data in a simple JSON format
 }
 
+const CONNECTOR_TYPE = "facebook";
+
 class FacebookConnector {
   constructor(webserver, httpserver, httpsserver, socket, options) {
     options = Object.assign({}, defaultOptions, options);
@@ -41,6 +43,10 @@ class FacebookConnector {
   init() {
     if (this.enabled) {
       Object.assign(this, Botkit.facebookbot(this.options));
+      if (typeof this.before === "function") {
+        this.nextBefore = watsonMiddleware.before;
+        watsonMiddleware.before = this.before.bind(this);
+      }
       this.setupMessageReceive();
       const bot = this.spawn();
       this.createWebhookEndpoints(this.webserver, bot);
@@ -49,6 +55,15 @@ class FacebookConnector {
         "Facebook connector disabled. To enable add facebook required configuration in .env"
       );
     }
+  }
+
+  before(message, payload, callback) {
+    if (!(payload.context && payload.context.connector_type)) {
+      payload.context = Object.assign({}, payload.context, {
+        connector_type: CONNECTOR_TYPE
+      });
+    }
+    this.nextBefore(message, payload, callback);
   }
 
   setupMessageReceive() {
@@ -100,13 +115,13 @@ class FacebookConnector {
                 };
               case "image":
                 return {
-                  text: resp.title,
-                  files: [
-                    {
+                  attachment: {
+                    type: "image",
+                    payload: {
                       url: resp.source,
-                      image: true
+                      is_reusable: true
                     }
-                  ]
+                  }
                 };
               case "pause":
                 return {

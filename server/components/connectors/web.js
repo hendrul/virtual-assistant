@@ -21,6 +21,8 @@ var Botkit = require("botkit");
 var storage = require("../storage");
 const watsonMiddleware = require("../watson-middleware");
 
+const CONNECTOR_TYPE = "web";
+
 var defaultOptions = {
   replyWithTyping: true,
   stats_optout: true
@@ -51,6 +53,10 @@ class WebConnector {
   init() {
     if (this.enabled) {
       Object.assign(this, Botkit.socketbot(this.options));
+      if (typeof this.before === "function") {
+        this.nextBefore = watsonMiddleware.before;
+        watsonMiddleware.before = this.before.bind(this);
+      }
       this.setupMessageHistory();
       this.setupMessageReceive();
 
@@ -66,6 +72,15 @@ class WebConnector {
     } else {
       console.log("Web connector disabled!");
     }
+  }
+
+  before(message, payload, callback) {
+    if (!(payload.context && payload.context.connector_type)) {
+      payload.context = Object.assign({}, payload.context, {
+        connector_type: CONNECTOR_TYPE
+      });
+    }
+    this.nextBefore(message, payload, callback);
   }
 
   setupMessageHistory() {

@@ -4,6 +4,8 @@ const whatsappbot = require("./WhatsappBot");
 var storage = require("../../storage");
 const watsonMiddleware = require("../../watson-middleware");
 
+const CONNECTOR_TYPE = "whatsapp";
+
 const defaultOptions = {
   stats_optout: true,
   apikey: process.env.WHATSAPP_API_KEY,
@@ -38,6 +40,10 @@ class WhatsappConnector {
     if (this.enabled) {
       const controller = whatsappbot(this.options);
       Object.assign(this, controller);
+      if (typeof this.before === "function") {
+        this.nextBefore = watsonMiddleware.before;
+        watsonMiddleware.before = this.before.bind(this);
+      }
       this.setupMessageHistory();
       this.setupMessageReceive();
       const bot = controller.spawn();
@@ -66,6 +72,15 @@ class WhatsappConnector {
         "Whatsapp connector disabled. To enable add whatsapp required configuration in .env"
       );
     }
+  }
+
+  before(message, payload, callback) {
+    if (!(payload.context && payload.context.connector_type)) {
+      payload.context = Object.assign({}, payload.context, {
+        connector_type: CONNECTOR_TYPE
+      });
+    }
+    this.nextBefore(message, payload, callback);
   }
 
   setupMessageReceive() {

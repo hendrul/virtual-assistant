@@ -4,6 +4,8 @@ const twitterbot = require("./TwitterBot");
 var storage = require("../../storage");
 const watsonMiddleware = require("../../watson-middleware");
 
+const CONNECTOR_TYPE = "twitter";
+
 const defaultOptions = {
   stats_optout: true,
   consumer_key: process.env.TWITTER_CONSUMER_KEY,
@@ -46,6 +48,10 @@ class TwitterConnector {
   init() {
     if (this.enabled) {
       Object.assign(this, twitterbot(this.options));
+      if (typeof this.before === "function") {
+        this.nextBefore = watsonMiddleware.before;
+        watsonMiddleware.before = this.before.bind(this);
+      }
       this.setupMessageReceive();
       const bot = this.spawn();
       this.createWebhookEndpoints(this.webserver, bot);
@@ -54,6 +60,15 @@ class TwitterConnector {
         "Twitter connector disabled. To enable add twitter required configuration in .env"
       );
     }
+  }
+
+  before(message, payload, callback) {
+    if (!(payload.context && payload.context.connector_type)) {
+      payload.context = Object.assign({}, payload.context, {
+        connector_type: CONNECTOR_TYPE
+      });
+    }
+    this.nextBefore(message, payload, callback);
   }
 
   setupMessageReceive() {
