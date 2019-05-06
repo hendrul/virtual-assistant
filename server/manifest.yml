@@ -14,8 +14,8 @@ applications:
     name: chatbot-tailoy
     command: node /usr/src/chatbot/server.js
     docker:
-      image: hendrul/chatbot-tailoy
-    memory: 128M
+      image: hendrul/chatbot-tailoy:latest
+    memory: 256M
     disk_quota: 2G
     env:
       NODE_ENV: production
