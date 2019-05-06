@@ -146,7 +146,7 @@ class FacebookConnector {
             }, Promise.resolve())
             .then(() => {})
             .catch(err => {
-              console.error(err);
+              console.error(err.stack);
             });
         }
       }
