@@ -153,7 +153,7 @@ class WebConnector {
                 var text = [].concat(resp.text);
                 var digressed = ((message.context || {}).system || {})
                   .digressed;
-                return digressed ? text[0] : text.join("<br>");
+                return digressed ? text[0] : text.join(" <br> ");
               case "option":
                 return {
                   text:
