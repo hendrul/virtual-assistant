@@ -4,8 +4,6 @@ const whatsappbot = require("./WhatsappBot");
 var storage = require("../../storage");
 const watsonMiddleware = require("../../watson-middleware");
 
-const CONNECTOR_TYPE = "whatsapp";
-
 const defaultOptions = {
   stats_optout: true,
   apikey: process.env.WHATSAPP_API_KEY,
@@ -75,9 +73,9 @@ class WhatsappConnector {
   }
 
   before(message, payload, callback) {
-    if (!(payload.context && payload.context.connector_type)) {
+    if (!(payload.context && payload.context.channel)) {
       payload.context = Object.assign({}, payload.context, {
-        connector_type: CONNECTOR_TYPE
+        channel: message.channel
       });
     }
     this.nextBefore(message, payload, callback);

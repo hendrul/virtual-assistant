@@ -18,8 +18,6 @@ if (storage.cloudant) {
   defaultOptions.json_file_store = __dirname + "/.data/db/"; // store user data in a simple JSON format
 }
 
-const CONNECTOR_TYPE = "facebook";
-
 class FacebookConnector {
   constructor(webserver, httpserver, httpsserver, socket, options) {
     options = Object.assign({}, defaultOptions, options);
@@ -58,9 +56,9 @@ class FacebookConnector {
   }
 
   before(message, payload, callback) {
-    if (!(payload.context && payload.context.connector_type)) {
+    if (!(payload.context && payload.context.channel)) {
       payload.context = Object.assign({}, payload.context, {
-        connector_type: CONNECTOR_TYPE
+        channel: message.channel
       });
     }
     this.nextBefore(message, payload, callback);

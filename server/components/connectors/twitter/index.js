@@ -4,8 +4,6 @@ const twitterbot = require("./TwitterBot");
 var storage = require("../../storage");
 const watsonMiddleware = require("../../watson-middleware");
 
-const CONNECTOR_TYPE = "twitter";
-
 const defaultOptions = {
   stats_optout: true,
   consumer_key: process.env.TWITTER_CONSUMER_KEY,
@@ -63,9 +61,9 @@ class TwitterConnector {
   }
 
   before(message, payload, callback) {
-    if (!(payload.context && payload.context.connector_type)) {
+    if (!(payload.context && payload.context.channel)) {
       payload.context = Object.assign({}, payload.context, {
-        connector_type: CONNECTOR_TYPE
+        channel: message.channel
       });
     }
     this.nextBefore(message, payload, callback);

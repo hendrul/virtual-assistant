@@ -21,8 +21,6 @@ var Botkit = require("botkit");
 var storage = require("../storage");
 const watsonMiddleware = require("../watson-middleware");
 
-const CONNECTOR_TYPE = "web";
-
 var defaultOptions = {
   replyWithTyping: true,
   stats_optout: true
@@ -75,9 +73,9 @@ class WebConnector {
   }
 
   before(message, payload, callback) {
-    if (!(payload.context && payload.context.connector_type)) {
+    if (!(payload.context && payload.context.channel)) {
       payload.context = Object.assign({}, payload.context, {
-        connector_type: CONNECTOR_TYPE
+        channel: message.channel
       });
     }
     this.nextBefore(message, payload, callback);
