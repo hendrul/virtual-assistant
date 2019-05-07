@@ -46,9 +46,9 @@ class ChatHeader extends React.PureComponent {
 const styles = theme => ({
   container: {
     //linear-gradient(to bottom, rgba(0,182,251,1) 0%,rgba(47,144,168,1) 100%)
-    background: theme.palette.primary.main,
+    background: theme.palette.primary.gradient,
     padding: "0.5rem 1rem",
-    height: "65px",
+    height: "50px",
     color: "#FFF",
     position: "relative",
     boxShadow: "0px 1px 3px 0px rgba(0,0,0,0.2)",
@@ -59,7 +59,7 @@ const styles = theme => ({
   },
   avatar: {
     position: "relative",
-    background: theme.palette.primary.main,
+    background: theme.palette.primary.gradient,
     padding: "10px",
     width: "100px",
     height: "100px",
@@ -77,9 +77,8 @@ const styles = theme => ({
     boxShadow: "0px 1px 3px 0px rgba(0,0,0,0.2)"
   },
   avatarImg: {
-    width: "95px",
-    height: "95px",
-    maxWidth: "unset",
+    width: "100px",
+    height: "100px",
     borderRadius: "50%",
     [`@media (max-height:${theme.breakpoints.values.sm}px)`]: {
       width: "75px",
@@ -88,10 +87,7 @@ const styles = theme => ({
   },
   titleContainer: {
     position: "absolute",
-    left: "95px",
-    [`@media (max-height:${theme.breakpoints.values.sm}px)`]: {
-      left: "110px"
-    },
+    left: "120px",
     color: "#fff",
     "& #avatarName": {
       fontFamily: "Merienda, cursive"

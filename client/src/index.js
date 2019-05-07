@@ -29,9 +29,9 @@ render(
     <Chat
       connection={botkitConnection}
       avatarUrl={theme.avatar.url}
-      avatarName="TaiBot"
-      slogan="Tu satisfacción es mi objetivo."
-      calloutMessages={["¡Hola! Soy TaiBot, listo para ayudarte."]}
+      avatarName="Selene"
+      slogan="Tu asistente de confianza."
+      calloutMessages={["¡Hola! Soy Selene, tu asistente de confianza."]}
     />
   </ThemeProvider>,
   document.getElementById("chat-root")
