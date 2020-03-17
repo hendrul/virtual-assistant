@@ -2,3 +2,5 @@ version: "3"
 services:
   chatbot:
     build: ./
+    ports:
+    - "8080:8080"
