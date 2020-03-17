@@ -6,7 +6,7 @@
   "scripts": {
     "build": "npm --production install",
     "start": "node server.js",
-    "dev": "node --inspect server.js",
+    "dev": "node --inspect=0.0.0.0:9229 server.js",
     "test": "jest",
     "download-workspace": "sh scripts/download_workspace",
     "update-workspace": "sh scripts/upload_workspace"
