@@ -1,7 +1,0 @@
-.git/
-**/node_modules/
-test/
-log/
-client/*/dev
-vcap-local.js
-**/.cache/

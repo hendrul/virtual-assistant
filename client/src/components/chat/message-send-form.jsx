@@ -1,5 +1,5 @@
 import * as React from "react";
-import withStyles, { withTheme } from "react-jss";
+import { withStyles, withTheme } from "@material-ui/core/styles";
 import SendIcon from "@material-ui/icons/Send";
 
 class SendMessageForm extends React.PureComponent {

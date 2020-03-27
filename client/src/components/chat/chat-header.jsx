@@ -1,5 +1,5 @@
 import * as React from "react";
-import withStyles, { withTheme } from "react-jss";
+import { withStyles, withTheme } from "@material-ui/core/styles";
 import Avatar from "@material-ui/core/Avatar";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
@@ -46,9 +46,9 @@ class ChatHeader extends React.PureComponent {
 const styles = theme => ({
   container: {
     //linear-gradient(to bottom, rgba(0,182,251,1) 0%,rgba(47,144,168,1) 100%)
-    background: theme.palette.primary.gradient,
+    background: theme.palette.primary.main,
     padding: "0.5rem 1rem",
-    height: "50px",
+    height: "65px",
     color: "#FFF",
     position: "relative",
     boxShadow: "0px 1px 3px 0px rgba(0,0,0,0.2)",
@@ -59,7 +59,7 @@ const styles = theme => ({
   },
   avatar: {
     position: "relative",
-    background: theme.palette.primary.gradient,
+    background: theme.palette.primary.main,
     padding: "10px",
     width: "100px",
     height: "100px",
@@ -77,8 +77,9 @@ const styles = theme => ({
     boxShadow: "0px 1px 3px 0px rgba(0,0,0,0.2)"
   },
   avatarImg: {
-    width: "100px",
-    height: "100px",
+    width: "95px",
+    height: "95px",
+    maxWidth: "unset",
     borderRadius: "50%",
     [`@media (max-height:${theme.breakpoints.values.sm}px)`]: {
       width: "75px",
@@ -87,7 +88,10 @@ const styles = theme => ({
   },
   titleContainer: {
     position: "absolute",
-    left: "120px",
+    left: "95px",
+    [`@media (max-height:${theme.breakpoints.values.sm}px)`]: {
+      left: "110px"
+    },
     color: "#fff",
     "& #avatarName": {
       fontFamily: "Merienda, cursive"

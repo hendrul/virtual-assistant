@@ -1,5 +1,5 @@
 import * as React from "react";
-import withStyles, { withTheme } from "react-jss";
+import { withStyles, withTheme } from "@material-ui/core/styles";
 import { space } from "styled-system";
 import uuid from "uuid";
 
@@ -36,7 +36,7 @@ class MessageList extends React.PureComponent {
             variant={variant}
             altColors={altColors}
             mb="5px"
-            {...(i === 0 ? { mt: "auto" } : { mt: `${theme.spacing.unit}px` })}
+            {...(i === 0 ? { mt: "auto" } : { mt: `${theme.spacing(1)}px` })}
           />
         ))}
         <div style={{ float: "left", clear: "both" }} ref={this.bottomRef} />
@@ -52,7 +52,7 @@ const styles = theme => ({
     flexDirection: "column",
     display: "flex",
     overflowY: "auto",
-    padding: `0 ${theme.spacing.spaces[2]}px`,
+    padding: `0 ${theme.spacing(2)}px`,
     minWidth: "115px"
   }
 });

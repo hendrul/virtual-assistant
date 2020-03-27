@@ -1,5 +1,5 @@
 import * as React from "react";
-import withStyles, { withTheme } from "react-jss";
+import { withStyles, withTheme } from "@material-ui/core/styles";
 import { space } from "styled-system";
 import { Markdown } from "react-showdown";
 import Typography from "@material-ui/core/Typography";
@@ -59,7 +59,7 @@ class Message extends React.PureComponent {
 const styles = theme => ({
   space,
   container: ({ message }) => ({
-    padding: `${theme.spacing.spaces[2]}px`,
+    padding: `${theme.spacing(2)}px`,
     textAlign: "justify",
     width: "auto",
     display: "inline-block",

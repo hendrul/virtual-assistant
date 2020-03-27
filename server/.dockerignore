@@ -4,3 +4,4 @@ test/
 log/
 client/*/dev
 vcap-local.js
+*.yml

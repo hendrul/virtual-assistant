@@ -1,5 +1,6 @@
 import * as React from "react";
-import withStyles, { withTheme } from "react-jss";
+import merge from "merge";
+import { withStyles, withTheme } from "@material-ui/core/styles";
 import { space, width, height } from "styled-system";
 import Paper from "@material-ui/core/Paper";
 
@@ -7,6 +8,8 @@ import ChatHeader from "./chat-header";
 import MessageList from "./message-list";
 import StatusIndicator from "./status-indicator";
 import MessageSendForm from "./message-send-form";
+
+const strings = window.appStrings;
 
 const Status = {
   STARTING: "STARTING",
@@ -21,7 +24,7 @@ const mapStatusToProps = status => {
   switch (status) {
     case Status.STARTING:
       return {
-        text: "Estableciendo conexion...",
+        text: strings.statusStarting,
         showDots: false
       };
     case Status.CONNECTED:
@@ -31,19 +34,19 @@ const mapStatusToProps = status => {
       };
     case Status.DISCONNECTED:
       return {
-        text: "Se ha perdido la conexion, intentando reconectar...",
+        text: strings.statusDisconnected,
         showDots: false
       };
 
     //case Status.ERROR:
     case Status.OFFLINE:
       return {
-        text: "Sin conexion, refresca para reconectar nuevamente...",
+        text: strings.statusOffline,
         showDots: false
       };
     case Status.TYPING:
       return {
-        text: "Selene esta escribiendo",
+        text: strings.statusTyping,
         showDots: true,
         dotsPosition: "right"
       };
@@ -99,7 +102,7 @@ class ChatWindow extends React.PureComponent {
     this.connection.on("socket_error", err => {
       this.setState({
         status: Status.ERROR,
-        error: "Error de conexion"
+        error: strings.statusConnectionError
       });
     });
 
@@ -129,7 +132,7 @@ class ChatWindow extends React.PureComponent {
     this.connection.on("history_error", history => {
       this.setState({
         status: Status.ERROR,
-        error: "Error de conexion",
+        error: strings.statusConnectionError,
         history: []
       });
     });
@@ -183,12 +186,12 @@ class ChatWindow extends React.PureComponent {
           />
           <StatusIndicator
             {...mapStatusToProps(status)}
-            pl={`${theme.spacing.unit}px`}
+            pl={`${theme.spacing(1)}px`}
             mr="17px"
           />
           <MessageSendForm
             disabled={status !== Status.CONNECTED}
-            placeholder="Escribe tus preguntas."
+            placeholder={strings.inputPlaceholder}
             onSend={this.handleSend}
           />
         </div>
@@ -197,24 +200,28 @@ class ChatWindow extends React.PureComponent {
   }
 }
 
-const styles = theme => ({
-  width,
-  height,
-  space,
-  container: {
-    "&:after": {
-      content: "",
-      display: "table",
-      clear: "both"
+const styles = theme =>
+  merge(
+    {
+      width,
+      height,
+      space,
+      container: {
+        "&:after": {
+          content: "",
+          display: "table",
+          clear: "both"
+        },
+        zIndex: 1000
+      },
+      messageWindow: {
+        height: "100%",
+        width: "100%",
+        display: "flex",
+        flexDirection: "column"
+      }
     },
-    zIndex: 1000
-  },
-  messageWindow: {
-    height: "100%",
-    width: "100%",
-    display: "flex",
-    flexDirection: "column"
-  }
-});
+    theme.chatWindow
+  );
 
 export default withTheme(withStyles(styles)(ChatWindow));

@@ -1,5 +1,5 @@
 import * as React from "react";
-import withStyles, { withTheme } from "react-jss";
+import { withStyles, withTheme } from "@material-ui/core/styles";
 import { space, width, height } from "styled-system";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";

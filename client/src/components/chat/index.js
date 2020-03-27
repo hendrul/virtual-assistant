@@ -1,5 +1,5 @@
 import * as React from "react";
-import withStyles, { withTheme } from "react-jss";
+import { withStyles, withTheme } from "@material-ui/core/styles";
 import Fab from "@material-ui/core/Fab";
 import ChatIcon from "@material-ui/icons/Forum";
 import CloseIcon from "@material-ui/icons/Close";
@@ -14,8 +14,8 @@ class Chat extends React.PureComponent {
   static defaultProps = {
     connection: undefined,
     avatarUrl: "",
-    avatarName: "Unnamed",
-    slogan: "The Unnamed bot that no one knows",
+    avatarName: "",
+    slogan: "",
     calloutMessages: []
   };
   state = {
@@ -70,8 +70,6 @@ class Chat extends React.PureComponent {
       avatarName,
       slogan,
       calloutMessages,
-      theme,
-      className,
       classes
     } = this.props;
     // const LazyChatWindow = this.ChatWindow;

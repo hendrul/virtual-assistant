@@ -1,0 +1,9 @@
+version: "3"
+services:
+  chatbot:
+    build: ./
+    image: <%= DOCKER_NAMESPACE %>/<%= BRAND %>
+    command: npm run dev
+    ports:
+      - "8080:8080"
+      - "9229:9229"

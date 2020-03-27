@@ -1,5 +1,4 @@
 import EventEmitter from "eventemitter3";
-import path from "path";
 import defaults from "lodash.defaults";
 
 const Events = {
@@ -13,9 +12,6 @@ const COOKIE_NAME = "botkit_guid";
 
 class BotkitConnection {
   static defaultConfig = {
-    ssl: location.protocol === "https:",
-    host: location.host,
-    basePath: "",
     reconnectTimeout: 3000,
     maxReconnect: 5
   };
@@ -26,10 +22,9 @@ class BotkitConnection {
   constructor(config = {}) {
     this.config = {};
     defaults(this.config, config, BotkitConnection.defaultConfig);
-    // prettier-ignore
-    (this.wsUrl =
-      (this.config.ssl ? "wss" : "ws") + "://" + path.join(this.config.host, this.config.basePath)),
-      (this.eventEmitter = new EventEmitter());
+    this.wsEndpoint = this.config.wsEndpoint;
+    this.historyEndpoint = this.config.historyEndpoint;
+    this.eventEmitter = new EventEmitter();
   }
   on = (event, handler) => {
     this.eventEmitter.on(event, handler);
@@ -89,8 +84,7 @@ class BotkitConnection {
   };
   getHistory = () => {
     if (this.guid) {
-      // prettier-ignore
-      this.request((this.config.ssl ? "https" : "http") + "://" + path.join(this.config.host, this.config.basePath) + "/botkit/history", {
+      this.request(this.historyEndpoint, {
         user: this.guid
       })
         .then(history => {
@@ -139,9 +133,9 @@ class BotkitConnection {
     return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
       s4() + '-' + s4() + s4() + s4();
   }
-  connect = wsUrl => {
+  connect = wsEndpoint => {
     // Create WebSocket connection.
-    this.socket = new WebSocket(wsUrl);
+    this.socket = new WebSocket(wsEndpoint);
 
     var connectEvent = "welcome";
     if (this.getCookie(COOKIE_NAME)) {
@@ -176,7 +170,7 @@ class BotkitConnection {
       if (this.reconnectCount < this.config.maxReconnect) {
         setTimeout(() => {
           console.log("RECONNECTING ATTEMPT ", ++this.reconnectCount);
-          this.connectWebsocket(this.wsUrl);
+          this.connectWebsocket(this.wsEndpoint);
         }, this.config.reconnectTimeout);
       } else {
         this.trigger("offline", event);
@@ -198,7 +192,7 @@ class BotkitConnection {
   };
   boot = () => {
     if (!this.socket) {
-      this.connect(this.wsUrl);
+      this.connect(this.wsEndpoint);
       this.on("connected", () => {
         console.log("Booted successfuly");
       });

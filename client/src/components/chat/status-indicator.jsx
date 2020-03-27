@@ -1,5 +1,5 @@
 import * as React from "react";
-import withStyles, { withTheme } from "react-jss";
+import { withStyles, withTheme } from "@material-ui/core/styles";
 import { space } from "styled-system";
 import Typography from "@material-ui/core/Typography";
 
@@ -60,7 +60,7 @@ const styles = theme => ({
     flexDirection: "row",
     display: "flex",
     zIndex: theme.zIndex.appBar,
-    paddingLeft: `${theme.spacing.unit}px`
+    paddingLeft: `${theme.spacing(1)}px`
   },
   wrapper: {
     display: "flex",
