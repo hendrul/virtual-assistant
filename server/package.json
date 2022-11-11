@@ -29,7 +29,7 @@
     "request": "^2.79.0",
     "rotating-file-stream": "^1.4.0",
     "set-value": "^3.0.0",
-    "socket.io-client": "2.1.1",
+    "socket.io-client": "2.5.0",
     "vcap_services": "^0.6.0"
   },
   "devDependencies": {
